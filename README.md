@@ -1,6 +1,6 @@
-Delta Search Algorithm
+Blind Delta Algorithm
 ======================
-The Delta Search Algorithm is a Python-based computational tool designed to explore and analyze Polynomials of Continued Fractions (PCFs). PCFs are mathematical constructs related to continued fractions and have applications in number theory and mathematical research.
+The Blind Delta Algorithm is a Python-based computational tool designed to explore and analyze Polynomials of Continued Fractions (PCFs). PCFs are mathematical constructs related to continued fractions and have applications in number theory and mathematical research.
 
 ## Overview
 The algorithm employs numerical and optimization libraries, including NumPy, SciPy, and GMPY2, to perform an exhaustive search over a specified search space of PCFs. The code calculates and analyzes various characteristics of PCFs, such as limits, convergence rates, and deltas. This README provides an overview of the key functions within the code.
@@ -83,19 +83,25 @@ The algorithm employs numerical and optimization libraries, including NumPy, Sci
 10. **convergence_rate_model_function(x, b, c, d)**
     - Model function for curve fitting of convergence rate. This function defines the model function used in the convergence rate curve fitting.
 
-11. **calc_individual(coefficients, coefficients_lengths, depth, precision, not_calculated_marker, rational_marker, LIMIT_CONSTANT)**
+11. **calc_individual(coefficients, coefficients_lengths, depth, p, precision, not_calculated_marker, rational_marker, LIMIT_CONSTANT)**
     - Calculate an individual PCF. This function brings together various calculations and formats the results for a single PCF, including limits, deltas, and convergence rates.
     - Parameters:
        - coefficients (list): Coefficients of the PCF's polynomials a_n and b_n.
        - coefficients_lengths (list): Lengths (or the degree+1) of the polynomials a_n and b_n.
        - depth (int): Calculation depth.
+       - p (int): The relation between the calculation depth and the point where the blind delta is sampled.
+       - precision (int): The required precision for all calculations.
+       - not_calculated_marker (int): A flag to mark data that was not calculated.
+       - rational_marker (int): A flag to mark data as rational.
+       - LIMIT_CONSTANT (int): A variable used as a numerical replacement for infinity.
     - Returns:
        - dict: Resulting PCF data.
 
-12. **search(depth, coefficients_lengths, co_min, co_max, precision, not_calculated_marker, rational_marker, LIMIT_CONSTANT, n_cores)**
+12. **search(depth, p, coefficients_lengths, co_min, co_max, precision, not_calculated_marker, rational_marker, LIMIT_CONSTANT, n_cores)**
     - Explore all PCFs in a given search space. This function orchestrates the search process, distributing calculations across multiple cores for efficiency.
     - Parameters:
        - depth (int): Calculation depth.
+       - p (int): The relation between the calculation depth and the point where the blind delta is sampled.
        - coefficients_lengths (list): Lengths (or the degree+1) of the polynomials a_n and b_n.
        - co_min (int): Minimum value for the coefficients of a_n and b_n.
        - co_max (int): Maximum value for the coefficients of a_n and b_n.
@@ -110,7 +116,7 @@ The algorithm employs numerical and optimization libraries, including NumPy, Sci
 
 ## Usage
 1. Set up Python 3.x and install required dependencies using pip install numpy scipy gmpy2.
-2. Open delta_search.py and adjust parameters in the main function.
-3. Run the script with python delta_search.py.
-4. View the results in the generated CSV file that will have the name DeltaSearch<coefficients_lengths>_<co_min>_<co_max>.csv
+2. Open blind_delta.py and adjust parameters in the main function.
+3. Run the script with python blind_delta.py.
+4. View the results in the generated CSV file that will have the name BlindDelta<coefficients_lengths>_<co_min>_<co_max>.csv
    where coefficients_lengths, co_min, and co_max are the parameters supplied to the search function to define the search space.
