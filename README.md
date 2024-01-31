@@ -24,12 +24,13 @@ The algorithm employs numerical and optimization libraries, including NumPy, Sci
    - Returns:
       - list: Coefficients and covariances of the fit.
 
-3. **fit_Convergence_Rate(pn, qn, depth)**
+3. **fit_Convergence_Rate(pn, qn, depth, sample_depth)**
    - Fit the convergence rate of the PCF.
    - Parameters:
       - pn (list): Pn values of the calculated PCF.
       - qn (list): Qn values of the calculated PCF.
-      - depth (int): Depth of calculation.
+      - depth (int): Depth of the reference point- or the "limit".
+      - sample_depth (int): The maximum depth to compare to the reference point.
    - Returns:
       - list: Parameters and covariances of the fit.
 
