@@ -7,7 +7,7 @@ base = 'console'
 
 # The script being bundled is just randomly selected for the initial GitHub Action POC
 executables = [
-    Executable('scripts/boinc/blind_delta.py', base='console', target_name='BlindDeltaAlgo')
+    Executable('blind_delta.py', base='console', target_name='BlindDeltaAlgo')
 ]
 
 setup(name='BlindDeltaAlgo',
