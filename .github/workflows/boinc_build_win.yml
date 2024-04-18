@@ -1,0 +1,53 @@
+name: Build for BOINC - Windows
+
+on:
+  push
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+
+    steps:
+      - name: "Checkout repository"
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v4
+      - name: "Configure python"
+        # https://github.com/actions/setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.7"
+      - name: "Install dependencies and cx-Freeze"
+        run: |
+            pip install -e .
+            pip install --upgrade cx_Freeze
+      - name: "Build binary"
+        run: | # See https://cx-freeze.readthedocs.io/en/stable/script.html#script
+           python generated_boinc_setup.py build
+#      - name: "Download BOINC wrapper"
+#        # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
+#        run: |
+#          curl "https://boinc.berkeley.edu/dl/wrapper_26016_windows_x86_64.zip" wrapper.zip
+#      - name: "Zip build output"
+#        # https://github.com/marketplace/actions/zip-release
+#        uses: thedoctor0/zip-release@0.7.5
+#        with:
+#          type: 'zip'
+#          filename: 'app.zip'
+#          path: 'build'
+#          # exclusions: '*.git* /*node_modules/* .editorconfig'
+#      - name: "Create bundle"
+#        # 7zip version.xml, job.xml, wrapper, and app.zip
+#        # https://github.com/edgarrc/action-7z
+#        uses: edgarrc/action-7z@v1
+#        with:
+#          args: 7z a -t7z -mx=9 ramanujan_mac.7z version.xml job.xml wrapper.zip app.zip
+      - name: "Upload binary to GitHub"
+        uses: actions/upload-artifact@v4
+        with:
+            name: ramanujan_win
+            path: ramanujan_win.7z
+            overwrite: true
+# @TODO
+#      - name: "Upload binary to BOINC"
+#        run: |
+#          scp ...
