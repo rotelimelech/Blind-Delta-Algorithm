@@ -351,9 +351,81 @@ def calc_individual(coefficients, coefficients_lengths, depth, p, precision, not
     return PCFdata
 
 
-def main():
-    search(2000, 2,[3, 3], -1, 1, 100000, -1010, -2020, 1000000000,3)
+def search(depth, p,coefficients_lengths, co_min, co_max, precision, not_calculated_marker, rational_marker, LIMIT_CONSTANT, n_cores):
+
+    """
+    Explore all PCFs in a given search space.
+
+    Args:
+    - depth (int): Calculation depth.
+    - p (int): The relation between the calculation depth and the point where the blind delta is sampled.
+    - coefficients_lengths (list): Lengths (or the degree+1) of a_n and b_n polynomials.
+    - co_min (int): Minimum value for the coefficients of a_n and b_n.
+    - co_max (int): Maximum value for the coefficients of a_n and b_n.
+    - n_cores (int): Number of CPU cores to use.
+    """
+
+    filename = f"BlindDelta{coefficients_lengths}_{co_min}_{co_max}.csv"
+
+    combinations_creation_S = time.time()
+
+    #Get all combinations of a pair of polynomials up to a given degree and given minimum and maximum coefficients
+    combinations = product(range(co_min, co_max + 1), repeat=sum(coefficients_lengths))
+
+    combinations = list(combinations)
+
+    #Remove all combinations were one of the polynomials is strictly 0
+    f = 0
+    for i in range(len(combinations)):
+
+        if([x for x in list(combinations[i-f])[:coefficients_lengths[0]] if x != 0] == [] or [z for z in list(combinations[i-f])[coefficients_lengths[0]:] if z != 0] == []):
+
+            combinations.remove(combinations[i-f])
+            f+=1
+
+    #Assign each pair of polynomials - now a PCF, data relevant for the calculation
+    all_combinations = [
+        (list(combo), coefficients_lengths, int(depth), p, precision, not_calculated_marker, rational_marker, LIMIT_CONSTANT) for combo in combinations
+    ]
 
 
-if __name__ == "__main__":
-    main()
+    combinations_creation_time = time.time() - combinations_creation_S
+
+    pcf_calculation_S = time.time()
+
+    #Split to different cores and explore all given PCFs
+    with Pool(n_cores) as mp_pool:
+        result = mp_pool.starmap(calc_individual, all_combinations)
+
+    pcf_calculation_time = time.time() - pcf_calculation_S
+
+    file_writing_S = time.time()
+
+    #Write the results into a file
+    with open(filename, "w") as csvfile:
+        csvwriter = csv.writer(csvfile)
+        fields = result[0].keys()
+        csvwriter.writerow(fields)
+
+        for i in range(len(result)):
+            csvwriter.writerow(result[i].values())
+
+    file_writing_time = time.time() - file_writing_S
+
+    #Print the time calculations took
+    print(combinations_creation_time, pcf_calculation_time, file_writing_time)
+    #Print some the settings of the calculations
+    print (
+        f"==================================================\n"
+        f"Depth: {depth}\n"
+        f"P: {p}"
+        f"Maximum degree of a_n: {coefficients_lengths[0]-1}\n"
+        f"Maximum degree of b_n: {coefficients_lengths[1]-1}\n"
+        f"Minimum coefficient value: {co_min}\n"
+        f"Maximum coefficient value: {co_max}\n"
+        f"Precision: {precision}\n"
+        f"Not calculated marker: {not_calculated_marker}\n"
+        f"Rational marker: {rational_marker}\n"
+        f"Limit constant: {LIMIT_CONSTANT}\n"
+        f"==================================================\n"
+    )
