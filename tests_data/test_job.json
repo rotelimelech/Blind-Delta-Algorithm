@@ -1,0 +1,18 @@
+{
+	"coefficents_ranges": [
+		[0, 1],
+		[0, 1],
+		[0, 1],
+		[0, 1],
+		[0, 1],
+		[0, 1]
+	],
+	"coefficients_lengths": 
+		[3, 3],
+	"depth": 2000,
+	"p": 2,
+	"precision": 100000,
+	"not_calculated_marker": -1010,
+	"rational_marker": -2020,
+	"limit_constant": 1000000000
+}
