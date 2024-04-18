@@ -27,13 +27,13 @@ jobs:
 #        # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
 #        run: |
 #          curl "https://boinc.berkeley.edu/dl/wrapper_26016_windows_x86_64.zip" wrapper.zip
-#      - name: "Zip build output"
-#        # https://github.com/marketplace/actions/zip-release
-#        uses: thedoctor0/zip-release@0.7.5
-#        with:
-#          type: 'zip'
-#          filename: 'app.zip'
-#          path: 'build'
+      - name: "Zip build output"
+        # https://github.com/marketplace/actions/zip-release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: 'app.zip'
+          path: 'build'
 #          # exclusions: '*.git* /*node_modules/* .editorconfig'
 #      - name: "Create bundle"
 #        # 7zip version.xml, job.xml, wrapper, and app.zip
@@ -44,8 +44,8 @@ jobs:
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
-            name: ramanujan_win
-            path: ramanujan_win.7z
+            name: app_win.zip
+            path: app.zip
             overwrite: true
 # @TODO
 #      - name: "Upload binary to BOINC"

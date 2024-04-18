@@ -27,14 +27,13 @@ jobs:
 #        # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
 #        run: |
 #          curl "https://boinc.berkeley.edu/dl/wrapper_26017_universal-apple-darwin.zip" wrapper.zip
-#      - name: "Zip build output"
-#        # https://github.com/marketplace/actions/zip-release
-#        uses: thedoctor0/zip-release@0.7.5
-#        with:
-#          type: 'zip'
-#          filename: 'app.zip'
-#          path: 'build'
-#          # exclusions: '*.git* /*node_modules/* .editorconfig'
+      - name: "Zip build output"
+        # https://github.com/marketplace/actions/zip-release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: 'app.zip'
+          path: 'build'
 #      - name: "Create bundle"
 #        # 7zip version.xml, job.xml, wrapper, and app.zip
 #        # https://github.com/edgarrc/action-7z
@@ -42,11 +41,10 @@ jobs:
 #        with:
 #          args: 7z a -t7z -mx=9 ramanujan_mac.7z version.xml job.xml wrapper.zip app.zip
       - name: "Upload binary to GitHub"
-        # https://github.com/actions/upload-artifact
         uses: actions/upload-artifact@v4
         with:
-            name: ramanujan_mac
-            path: ramanujan_mac.7z
+            name: app_mac.zip
+            path: app.zip
             overwrite: true
 # @TODO
 #      - name: "Upload binary to BOINC"
