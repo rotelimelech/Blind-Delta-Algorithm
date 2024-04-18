@@ -32,8 +32,8 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
-          filename: 'app.zip'
-          path: 'build'
+          filename: 'app'
+          path: 'build/'
 #          # exclusions: '*.git* /*node_modules/* .editorconfig'
 #      - name: "Create bundle"
 #        # 7zip version.xml, job.xml, wrapper, and app.zip

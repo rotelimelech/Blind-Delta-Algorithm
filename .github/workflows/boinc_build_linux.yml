@@ -32,7 +32,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
-          filename: 'app.zip'
+          filename: 'app'
           path: 'build'
 #      - name: "Create bundle"
 #        # 7zip version.xml, job.xml, wrapper, and app.zip
