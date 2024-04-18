@@ -1,11 +1,11 @@
 import csv
-from multiprocessing import Pool
 from itertools import product
 import time
 import gmpy2
 import numpy as np
 from scipy.optimize import curve_fit
 from gmpy2 import mpz, mpfr, log, gcd, sqrt
+
 
 def format_with(var, precision, symbol):
     """
