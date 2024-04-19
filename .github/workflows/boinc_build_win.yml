@@ -32,7 +32,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
-          filename: 'app'
+          filename: 'app.zip'
           directory: 'build/exe.win-amd64-3.11'
 #          # exclusions: '*.git* /*node_modules/* .editorconfig'
       - name: "Upload binary to GitHub"
