@@ -33,19 +33,19 @@ jobs:
         with:
           type: 'zip'
           filename: 'app'
-          path: 'build'
-#      - name: "Create bundle"
-#        # 7zip version.xml, job.xml, wrapper, and app.zip
-#        # https://github.com/edgarrc/action-7z
-#        uses: edgarrc/action-7z@v1
-#        with:
-#          args: 7z a -t7z -mx=9 ramanujan_mac.7z version.xml job.xml wrapper.zip app.zip
+          directory: 'build/exe.macosx-10.9-universal2-3.11'
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
             name: app_mac.zip
             path: app.zip
             overwrite: true
+#      - name: "Create bundle"
+#        # 7zip version.xml, job.xml, wrapper, and app.zip
+#        # https://github.com/edgarrc/action-7z
+#        uses: edgarrc/action-7z@v1
+#        with:
+#          args: 7z a -t7z -mx=9 ramanujan_mac.7z version.xml job.xml wrapper.zip app.zip
 # @TODO
 #      - name: "Upload binary to BOINC"
 #        run: |

@@ -7,14 +7,14 @@ import csv
 DEFAULT_OUTPUT_FILENAME = 'blind_delta_output.csv'
 DEFAULT_DEPTH = 2000
 DEFAULT_P = 2
-DEFAULT_PRECISSION = 100_000
+DEFAULT_PRECISION = 100_000
 DEFAULT_NOT_CALCULATED_MARKER = -1010
 DEFAULT_RATIONAL_MARKER = -2020
 DEFAULT_LIMIT_CONSTANT = 1e10
 
 
-def blind_delta_multi_pcf_wrapper(coefficents_ranges, coefficients_lengths, depth=DEFAULT_DEPTH, p=DEFAULT_P, 
-    precision=DEFAULT_PRECISSION, not_calculated_marker=DEFAULT_NOT_CALCULATED_MARKER, 
+def blind_delta_multi_pcf_wrapper(coefficients_ranges, coefficients_lengths, depth=DEFAULT_DEPTH, p=DEFAULT_P,
+    precision=DEFAULT_PRECISION, not_calculated_marker=DEFAULT_NOT_CALCULATED_MARKER,
     rational_marker=DEFAULT_RATIONAL_MARKER, limit_constant=DEFAULT_LIMIT_CONSTANT):
     """
     A wrapper function from that executes blind_delta.calc_individual (which executes the blind delta algorithm on a 
