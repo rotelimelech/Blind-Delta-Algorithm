@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
             name: app_linux.zip
-            path: app.zip
+            path: build/exe.linux-x86_64-3.11/app.zip
             overwrite: true
 #      - name: "Create bundle"
 #        # 7zip version.xml, job.xml, wrapper, and app.zip
