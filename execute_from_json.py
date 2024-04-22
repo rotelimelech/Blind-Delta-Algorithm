@@ -13,7 +13,7 @@ DEFAULT_RATIONAL_MARKER = -2020
 DEFAULT_LIMIT_CONSTANT = 1e10
 
 
-def blind_delta_multi_pcf_wrapper(coefficients_ranges, coefficients_lengths, depth=DEFAULT_DEPTH, p=DEFAULT_P,
+def blind_delta_multi_pcf_wrapper(coefficents_ranges, coefficients_lengths, depth=DEFAULT_DEPTH, p=DEFAULT_P,
     precision=DEFAULT_PRECISION, not_calculated_marker=DEFAULT_NOT_CALCULATED_MARKER,
     rational_marker=DEFAULT_RATIONAL_MARKER, limit_constant=DEFAULT_LIMIT_CONSTANT):
     """
