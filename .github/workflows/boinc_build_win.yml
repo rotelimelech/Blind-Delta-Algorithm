@@ -39,7 +39,7 @@ jobs:
           curl -O https://boinc.berkeley.edu/dl/$env:WRAPPER.zip
       - name: "Unzip wrapper"
         run: | 
-          Expand-Archive -Force $env:WRAPPER.zip
+          Expand-Archive -Force -Path "$env:WRAPPER.zip"
       - name: "Fetch version number"
         run: |
           curl -O https://rnma.xyz/boinc/apps.php
