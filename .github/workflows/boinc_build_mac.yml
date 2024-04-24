@@ -56,9 +56,7 @@ jobs:
           VERSION=$(sed -n "/<th class=\"bg-primary\" colspan=4>$(printf '%s\n' "$BOINC_APP_DESCRIPTION" | sed 's/[\^$.|?*+(){}]/\\&/g')<\/th>/,/<td>\([0-9].[0-9]\)/p" tmp.html | sed -n 's/.*<td>\([0-9][0-9]*\.[0-9]*\)<\/td>.*/\1/ p')
           echo "Last published version of $BOINC_APP_DESCRIPTION is $VERSION"
           MAJOR_VERSION=$(echo $VERSION | cut -d '.' -f1)
-          echo "Major version $MAJOR_VERSION"
           MINOR_VERSION=$(echo $VERSION | cut -d '.' -f2)
-          echo "Minor version $MINOR_VERSION"
           if [ $MINOR_VERSION -eq 99 ]; then
             NEW_MAJOR_VERSION=$((10#$MAJOR_VERSION + 1))
             NEW_MINOR_VERSION="00"
@@ -66,16 +64,14 @@ jobs:
             NEW_MAJOR_VERSION=$MAJOR_VERSION
             NEW_MINOR_VERSION=$((10#$MINOR_VERSION + 1))
           fi
-          echo "New major version $NEW_MAJOR_VERSION"
-          echo "New minor version $NEW_MINOR_VERSION"
           NEW_VERSION="$NEW_MAJOR_VERSION.$(printf "%02d" $NEW_MINOR_VERSION)"
-          echo "New version is $NEW_VERSION"
+          echo "New version will be $NEW_VERSION"
       - name: "Create job.xml"
         run: |
           sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
       - name: "Create version.xml"
         run: |
-          sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
+          sed -e "s/{{WRAPPER}}/${{env.WRAPPER}}/g" -e "s/{{VERSION}}/${{env.NEW_VERSION}}/g" -e "s/{{PLATFORM}}/${{env.PLATFORM}}/g" boinc/version_template.xml > version.xml
 #      - name: "Sign files"
 #        run: |
       - name: "Create app bundle"
