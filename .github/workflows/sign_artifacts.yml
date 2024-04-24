@@ -1,0 +1,15 @@
+name: Sign Artifacts
+
+on:
+  push
+
+jobs:
+  sign-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository"
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v4
+      - name: "Sign something"
+        run: |
+          ./boinc/sign_executable boinc/sign_executable boinc/job_template.xml > boinc/job_template.xml.sig
