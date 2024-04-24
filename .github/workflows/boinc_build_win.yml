@@ -6,6 +6,16 @@ on:
 jobs:
   build-win:
     runs-on: windows-latest
+    env:
+      EXECUTABLE: 'BlindDeltaAlgo.exe'
+      # the name of the wrapper to use - these get updated every so often and can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
+      WRAPPER: 'wrapper_26016_windows_x86_64'
+      # we use this platform string to make our download artifacts unique for the same version across platforms
+      PLATFORM: 'win'
+      # we use the description to fetch the latest version of the app from the BOINC server apps page
+      BOINC_APP_DESCRIPTION: 'blind delta algorithm'
+      # has to match one of the platforms in the BOINC server project.xml and https://boinc.berkeley.edu/trac/wiki/BoincPlatforms
+      BOINC_PLATFORM: 'windows_x86_64'
 
     steps:
       - name: "Checkout repository"
@@ -23,31 +33,57 @@ jobs:
       - name: "Build binary"
         run: | # See https://cx-freeze.readthedocs.io/en/stable/script.html#script
            python generated_boinc_setup.py build
-#      - name: "Download BOINC wrapper"
-#        # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
-#        run: |
-#          curl "https://boinc.berkeley.edu/dl/wrapper_26016_windows_x86_64.zip" wrapper.zip
       - name: "Zip build output"
         # https://github.com/marketplace/actions/zip-release
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
           filename: 'app.zip'
-          directory: 'build/exe.win-amd64-3.11'
-#          # exclusions: '*.git* /*node_modules/* .editorconfig'
+          directory: 'build/executable'
+      - name: "Download BOINC wrapper"
+        # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
+        uses: valitydev/action-download-file@v1
+        with:
+          url: 'https://boinc.berkeley.edu/dl/$WRAPPER.zip'
+          target-path: .
+      - name: "Unzip wrapper"
+        run: | 
+          unzip '$WRAPPER.zip'
+      - name: "Fetch previous version number"
+        run: |
+          PAGE_CONTENT=$(curl -s https://rnma.xyz/boinc/apps.php)
+          echo "$PAGE_CONTENT" > tmp.html
+      - name: "Extract version from HTML"
+        run: |
+          VERSION=$(sed -n "/<th class=\"bg-primary\" colspan=4>$(printf '%s\n' "$BOINC_APP_DESCRIPTION" | sed 's/[\^$.|?*+(){}]/\\&/g')<\/th>/,/<td>\([0-9].[0-9]\)/p" tmp.html | sed -n 's/.*<td>\([0-9][0-9]*\.[0-9]*\)<\/td>.*/\1/ p')
+          echo "Last published version of $BOINC_APP_DESCRIPTION is $VERSION"
+          MAJOR_VERSION=$(echo $VERSION | cut -d '.' -f1)
+          MINOR_VERSION=$(echo $VERSION | cut -d '.' -f2)
+          if [ $MINOR_VERSION -eq 99 ]; then
+            NEW_MAJOR_VERSION=$((10#$MAJOR_VERSION + 1))
+            NEW_MINOR_VERSION="00"
+          else
+            NEW_MAJOR_VERSION=$MAJOR_VERSION
+            NEW_MINOR_VERSION=$((10#$MINOR_VERSION + 1))
+          fi
+          NEW_VERSION="$NEW_MAJOR_VERSION.$(printf "%02d" $NEW_MINOR_VERSION)"
+      - name: "Create job.xml"
+        run: |
+          sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
+      - name: "Create version.xml"
+        run: |
+          sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
+#      - name: "Sign files"
+#        run: |
+      - name: "Create app bundle"
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: '$BOINC_PLATFORM.zip'
+          custom: '--junk-paths'
+          path: version.xml job.$NEW_VERSION-$PLATFORM.xml $WRAPPER build/executable/app.zip
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
-            name: app_win.zip
-            path: build/exe.win-amd64-3.11/app.zip
+            name: '$BOINC_PLATFORM.zip'
             overwrite: true
-#      - name: "Create bundle"
-#        # 7zip version.xml, job.xml, wrapper, and app.zip
-#        # https://github.com/edgarrc/action-7z
-#        uses: edgarrc/action-7z@v1
-#        with:
-#          args: 7z a -t7z -mx=9 ramanujan_win.7z version.xml job.xml wrapper.zip app.zip
-# @TODO
-#      - name: "Upload binary to BOINC"
-#        run: |
-#          scp ...

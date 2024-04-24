@@ -1,11 +1,15 @@
+"""
+This file is the build configuration for cx_Freeze to generate an executable binary across platforms
+"""
 from cx_Freeze import setup, Executable
 
-# Dependencies are automatically detected, might need fine-tuning
-build_options = {'packages': [], 'excludes': ['tkinter']}
+build_options = {'packages': [],
+                 'excludes': ['tkinter'],
+                 'build_exe': 'executable' # sets name of folder under build folder in which executables end up
+                 }
 
 base = 'console'
 
-# The script being bundled is just randomly selected for the initial GitHub Action POC
 executables = [
     Executable('execute_from_json.py', base='console', target_name='BlindDeltaAlgo')
 ]
