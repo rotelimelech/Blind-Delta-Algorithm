@@ -5,7 +5,7 @@ from cx_Freeze import setup, Executable
 
 build_options = {'packages': [],
                  'excludes': ['tkinter'],
-                 'build_exe': 'executable' # sets name of folder under build folder in which executables end up
+                 'build_exe': 'build/executable' # sets name of folder under build folder in which executables end up
                  }
 
 base = 'console'
