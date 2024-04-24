@@ -32,13 +32,6 @@ jobs:
       - name: "Build binary"
         run: | # See https://cx-freeze.readthedocs.io/en/stable/script.html#script
            python generated_boinc_setup.py build
-      - name: "Zip build output"
-        # https://github.com/marketplace/actions/zip-release
-        uses: thedoctor0/zip-release@0.7.5
-        with:
-          type: 'zip'
-          filename: 'app.zip'
-          directory: 'build/executable'
       - name: "Download BOINC wrapper"
         # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
         run: |
@@ -66,6 +59,10 @@ jobs:
           NEW_VERSION="$NEW_MAJOR_VERSION.$(printf "%02d" $NEW_MINOR_VERSION)"
           echo "New version will be $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+      - name: "Zip build output"
+        run: |
+          cd build/executable
+          zip -r ../../app.$NEW_VERSION-$PLATFORM.zip .
       - name: "Create job.xml"
         run: |
           sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.${{env.NEW_VERSION}}-${{env.PLATFORM}}.xml
@@ -76,7 +73,7 @@ jobs:
 #        run: |
       - name: "Create app bundle"
         run: |
-          zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml $WRAPPER build/executable/app.zip
+          zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml $WRAPPER app.$NEW_VERSION-$PLATFORM.zip
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
