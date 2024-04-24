@@ -48,6 +48,9 @@ jobs:
         shell: bash
         run: |
           VERSION=$(sed -n "/<th class=\"bg-primary\" colspan=4>$(printf '%s\n' "$BOINC_APP_DESCRIPTION" | sed 's/[\^$.|?*+(){}]/\\&/g')<\/th>/,/<td>\([0-9].[0-9]\)/p" apps.php | sed -n 's/.*<td>\([0-9][0-9]*\.[0-9]*\)<\/td>.*/\1/ p')
+          if [ -z "$VERSION" ]; then
+            VERSION="1.0"
+          fi
           echo "Last published version of $BOINC_APP_DESCRIPTION is $VERSION"
           MAJOR_VERSION=$(echo $VERSION | cut -d '.' -f1)
           MINOR_VERSION=$(echo $VERSION | cut -d '.' -f2)
