@@ -76,12 +76,8 @@ jobs:
 #      - name: "Sign files"
 #        run: |
       - name: "Create app bundle"
-        uses: thedoctor0/zip-release@0.7.5
-        with:
-          type: 'zip'
-          filename: '$BOINC_PLATFORM.zip'
-          custom: '--junk-paths'
-          path: version.xml job.$NEW_VERSION-$PLATFORM.xml $WRAPPER build/executable/app.zip
+        run: |
+          zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml $WRAPPER build/executable/app.zip
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
