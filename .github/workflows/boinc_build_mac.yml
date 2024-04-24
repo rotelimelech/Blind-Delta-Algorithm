@@ -66,14 +66,13 @@ jobs:
           fi
           NEW_VERSION="$NEW_MAJOR_VERSION.$(printf "%02d" $NEW_MINOR_VERSION)"
           echo "New version will be $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
       - name: "Create job.xml"
         run: |
-          sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.${{env.NEW_VERSION}}-${{env.PLATFORM}}.xml
+          sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
       - name: "Create version.xml"
         run: |
-          sed -e "s/{{WRAPPER}}/${{env.WRAPPER}}/g" boinc/version_template.xml > version.xml
-          sed -e "s/{{VERSION}}/${{env.NEW_VERSION}}/g" version.xml > version.xml
-          sed -e "s/{{PLATFORM}}/${{env.PLATFORM}}/g" version.xml > version.xml
+          sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
 #      - name: "Sign files"
 #        run: |
       - name: "Create app bundle"
