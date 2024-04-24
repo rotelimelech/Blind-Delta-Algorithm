@@ -65,9 +65,11 @@ jobs:
           Set-Location -Path "build\executable"
           Compress-Archive -Path "." -DestinationPath "..\..\app.$env:NEW_VERSION-$env:PLATFORM.zip"
       - name: "Create job.xml"
+        shell: bash
         run: |
           sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
       - name: "Create version.xml"
+        shell: bash
         run: |
           sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
 #      - name: "Sign files"
