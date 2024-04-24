@@ -48,7 +48,7 @@ jobs:
           target-path: .
       - name: "Unzip wrapper"
         run: | 
-          unzip '$WRAPPER.zip'
+          unzip $WRAPPER.zip
       - name: "Fetch previous version number"
         run: |
           PAGE_CONTENT=$(curl -s https://rnma.xyz/boinc/apps.php)
