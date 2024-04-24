@@ -61,18 +61,22 @@ jobs:
           echo "New version will be $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
       - name: "Zip build output"
+        shell: bash
         run: |
           cd build/executable
           zip -r ../../app.$NEW_VERSION-$PLATFORM.zip .
       - name: "Create job.xml"
+        shell: bash
         run: |
           sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
       - name: "Create version.xml"
+        shell: bash
         run: |
           sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
 #      - name: "Sign files"
 #        run: |
       - name: "Create app bundle"
+        shell: bash
         run: |
           zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml $WRAPPER app.$NEW_VERSION-$PLATFORM.zip
       - name: "Upload binary to GitHub"
