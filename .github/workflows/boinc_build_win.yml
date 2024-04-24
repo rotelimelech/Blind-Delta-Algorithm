@@ -36,10 +36,10 @@ jobs:
       - name: "Download BOINC wrapper"
         # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
         run: |
-          curl -O https://boinc.berkeley.edu/dl/$WRAPPER.zip
+          curl -O https://boinc.berkeley.edu/dl/$env:WRAPPER.zip
       - name: "Unzip wrapper"
         run: | 
-          unzip $WRAPPER.zip
+          unzip $env:WRAPPER.zip
       - name: "Fetch version number"
         run: |
           curl -O https://rnma.xyz/boinc/apps.php
@@ -74,7 +74,7 @@ jobs:
 #        run: |
       - name: "Create app bundle"
         run: |
-          Compress-Archive -Path "version.xml, job.$env:NEW_VERSION-$env:PLATFORM.xml, $env:WRAPPER, app.$env:NEW_VERSION-$env:PLATFORM.zip" -DestinationPath "$env:BOINC_PLATFORM.zip"
+          Compress-Archive -Path "version.xml, job.$env:NEW_VERSION-$env:PLATFORM.xml, $env:WRAPPER.exe, app.$env:NEW_VERSION-$env:PLATFORM.zip" -DestinationPath "$env:BOINC_PLATFORM.zip"
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
