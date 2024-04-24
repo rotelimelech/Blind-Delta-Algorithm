@@ -42,10 +42,8 @@ jobs:
           directory: 'build/executable'
       - name: "Download BOINC wrapper"
         # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
-        uses: valitydev/action-download-file@v1
-        with:
-          url: 'https://boinc.berkeley.edu/dl/$WRAPPER.zip'
-          target-path: .
+        run: |
+          curl -O https://boinc.berkeley.edu/dl/$WRAPPER.zip
       - name: "Unzip wrapper"
         run: | 
           unzip $WRAPPER.zip
@@ -81,5 +79,6 @@ jobs:
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
-            name: '$BOINC_PLATFORM.zip'
+            name: $BOINC_PLATFORM.zip
+            path: $BOINC_PLATFORM.zip
             overwrite: true
