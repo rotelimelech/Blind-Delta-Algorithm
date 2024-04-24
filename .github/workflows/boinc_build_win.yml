@@ -42,11 +42,10 @@ jobs:
           unzip $WRAPPER.zip
       - name: "Fetch version number"
         run: |
-          PAGE_CONTENT=$(curl -s https://rnma.xyz/boinc/apps.php)
-          echo "$PAGE_CONTENT" > tmp.html
+          curl -O https://rnma.xyz/boinc/apps.php
       - name: "Define new version number"
         run: |
-          VERSION=$(sed -n "/<th class=\"bg-primary\" colspan=4>$(printf '%s\n' "$BOINC_APP_DESCRIPTION" | sed 's/[\^$.|?*+(){}]/\\&/g')<\/th>/,/<td>\([0-9].[0-9]\)/p" tmp.html | sed -n 's/.*<td>\([0-9][0-9]*\.[0-9]*\)<\/td>.*/\1/ p')
+          VERSION=$(sed -n "/<th class=\"bg-primary\" colspan=4>$(printf '%s\n' "$BOINC_APP_DESCRIPTION" | sed 's/[\^$.|?*+(){}]/\\&/g')<\/th>/,/<td>\([0-9].[0-9]\)/p" apps.php | sed -n 's/.*<td>\([0-9][0-9]*\.[0-9]*\)<\/td>.*/\1/ p')
           echo "Last published version of $BOINC_APP_DESCRIPTION is $VERSION"
           MAJOR_VERSION=$(echo $VERSION | cut -d '.' -f1)
           MINOR_VERSION=$(echo $VERSION | cut -d '.' -f2)
