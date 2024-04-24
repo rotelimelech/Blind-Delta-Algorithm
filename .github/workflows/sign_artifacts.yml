@@ -11,5 +11,13 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v4
       - name: "Sign something"
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         run: |
-          ./boinc/sign_executable boinc/sign_executable boinc/job_template.xml > boinc/job_template.xml.sig
+          ./boinc/sign_executable boinc/job_template.xml $SIGNING_KEY > boinc/job_template.xml.sig
+      - name: "Upload signed file to GitHub"
+        uses: actions/upload-artifact@v4
+        with:
+            name: job_template.xml.sig
+            path: boinc/job_template.xml.sig
+            overwrite: true
