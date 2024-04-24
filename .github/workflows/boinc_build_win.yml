@@ -74,7 +74,7 @@ jobs:
 #        run: |
       - name: "Create app bundle"
         run: |
-          Compress-Archive -Path version.xml, job.$NEW_VERSION-$PLATFORM.xml, $WRAPPER, app.$NEW_VERSION-$PLATFORM.zip -DestinationPath $BOINC_PLATFORM.zip
+          Compress-Archive -Path "version.xml, job.$env:$NEW_VERSION-$env:$PLATFORM.xml, $env:WRAPPER, app.$env:NEW_VERSION-$env:PLATFORM.zip" -DestinationPath "$env:BOINC_PLATFORM.zip"
       - name: "Upload binary to GitHub"
         uses: actions/upload-artifact@v4
         with:
