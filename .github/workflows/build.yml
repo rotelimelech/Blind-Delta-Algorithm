@@ -55,6 +55,7 @@ jobs:
       - name: "Create cxFreeze config file"
         run: |
           sed -e "s/EXECUTABLE/$EXECUTABLE/g" -e "s/APP_DESCRIPTION/$APP_DESCRIPTION/g" boinc/generated_boinc_setup_template.py > generated_boinc_setup.py
+          cat generated_boinc_setup.py
       - name: "Build binary"
         run: | # See https://cx-freeze.readthedocs.io/en/stable/script.html#script
            python generated_boinc_setup.py build
