@@ -38,6 +38,7 @@ jobs:
             overwrite: true
 
   build-binaries:
+    needs: [generate-freeze-config]
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
