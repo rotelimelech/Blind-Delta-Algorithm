@@ -45,17 +45,17 @@ jobs:
     - name: "Create version.xml"
       run: |
         sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
+    - name: "Create directory for previously created binaries"
+      run: |
+        mkdir app.$NEW_VERSION-$PLATFORM
     - name: "Download previously compiled binaries"
       uses: actions/download-artifact@v4
       with:
         name: ${{ env.PLATFORM }}
+        path: app.${{ env.NEW_VERSION }}-${{ env.PLATFORM }}
     - name: "Zip build output"
       run: |
-        ls -al
-        unzip $PLATFORM
-        cd $PLATFORM
-        zip app.$NEW_VERSION-$PLATFORM.zip .
-        mv app.$NEW_VERSION-$PLATFORM.zip ..
+        zip -r app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM
     - name: "Sign files"
       env:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
