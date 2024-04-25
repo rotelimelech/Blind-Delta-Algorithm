@@ -79,3 +79,13 @@ jobs:
         - platform: 'mac'
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
+
+#  deploy:
+#    needs: [bundle]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: "Copy files to server"
+#        run: |
+#          scp
+#      - name: "Invoke deploy script"
+#        run: |
