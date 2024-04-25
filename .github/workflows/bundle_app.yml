@@ -19,14 +19,14 @@ on:
         description: 'Name of the wrapper to use - these get updated every so often and can be found here https://boinc.berkeley.edu/dl/?C=M;O=D'
         type: string
         required: true
+
+jobs:
+  bundle:
     env:
       NEW_VERSION: ${{ inputs.new_version }}
       PLATFORM: ${{ inputs.platform }}
       BOINC_PLATFORM: ${{ inputs.boinc_platform }}
       WRAPPER: ${{ inputs.wrapper }}
-
-jobs:
-  bundle:
     runs-on: ubuntu-latest
     steps:
     - name: "Download BOINC wrapper"
