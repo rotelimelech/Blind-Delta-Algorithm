@@ -58,6 +58,7 @@ jobs:
   bundle:
     needs: [define-version, build-binaries]
     uses: ./.github/workflows/bundle_app.yml
+    secrets: inherit
     with:
       new_version: ${{ needs.define-version.outputs.new_version }}
       platform: ${{ matrix.platform }}
