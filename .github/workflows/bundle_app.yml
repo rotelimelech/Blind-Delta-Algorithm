@@ -51,6 +51,7 @@ jobs:
         name: ${{ env.PLATFORM }}
     - name: "Zip build output"
       run: |
+        ls -al
         unzip $PLATFORM
         cd $PLATFORM
         zip app.$NEW_VERSION-$PLATFORM.zip .
