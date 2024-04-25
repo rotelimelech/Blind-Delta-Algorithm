@@ -19,6 +19,10 @@ on:
         description: 'Name of the wrapper to use - these get updated every so often and can be found here https://boinc.berkeley.edu/dl/?C=M;O=D'
         type: string
         required: true
+      executable:
+        description: 'Executable name as used in naming cxFreeze output binary'
+        type: string
+        required: true
       extension:
         description: 'Lazy way to make sure that Windows executables are referenced with the .exe bit'
         type: string
