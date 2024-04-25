@@ -48,7 +48,7 @@ jobs:
     - name: "Download previously compiled binaries"
       uses: actions/download-artifact@v4
       with:
-        name: ${{ env.$PLATFORM }}
+        name: ${{ env.PLATFORM }}
     - name: "Zip build output"
       run: |
         cd $PLATFORM
