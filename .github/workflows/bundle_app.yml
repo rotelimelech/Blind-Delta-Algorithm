@@ -48,11 +48,12 @@ jobs:
     - name: "Download previously compiled binaries"
       uses: actions/download-artifact@v4
       with:
-        name: $PLATFORM
+        name: ${{ env.$PLATFORM }}
     - name: "Zip build output"
       run: |
-        cd build/executable
+        cd $PLATFORM
         zip app.$NEW_VERSION-$PLATFORM.zip .
+        mv app.$NEW_VERSION-$PLATFORM.zip ..
     - name: "Sign files"
       env:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
