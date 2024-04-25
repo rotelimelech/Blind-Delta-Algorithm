@@ -29,6 +29,9 @@ jobs:
       WRAPPER: ${{ inputs.wrapper }}
     runs-on: ubuntu-latest
     steps:
+    - name: "Checkout repository"
+      # https://github.com/actions/checkout
+      uses: actions/checkout@v4
     - name: "Download BOINC wrapper"
       # wrapper documentation is outdated, latest wrapper version can be found here https://boinc.berkeley.edu/dl/?C=M;O=D
       run: |

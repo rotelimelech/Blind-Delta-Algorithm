@@ -50,5 +50,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: version
-          path: build/executable
+          path: version
           overwrite: true
