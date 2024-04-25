@@ -73,9 +73,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: freeze_config.py
-          path: freeze_config.py
       - name: "Build binary"
         run: | # See https://cx-freeze.readthedocs.io/en/stable/script.html#script
+           cat freeze_config.py
            python freeze_config.py build
       - name: "Upload cxFreeze binaries"
         uses: actions/upload-artifact@v4
