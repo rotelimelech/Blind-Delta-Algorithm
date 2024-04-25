@@ -1,5 +1,4 @@
 name: 'Identify Target Version'
-description: 'Retrieves current version from BOINC server and generates the next/target version number'
 
 on:
   workflow_call:
@@ -7,6 +6,7 @@ on:
       boinc_app_description:
         description: 'The BOINC app "description" value from the BOINC server / database'
         required: true
+        type: string
     outputs:
       new_version:
         description: 'Next version number to be applied to build artifacts'
