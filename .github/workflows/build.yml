@@ -3,13 +3,13 @@ name: 'Build Python into Cross Platform Executable'
 on:
   push
 
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
-
 env:
   EXECUTABLE: 'BlindDeltaAlgo'
   APP_DESCRIPTION: 'blind delta algorithm'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   define-version:
@@ -82,14 +82,17 @@ jobs:
           wrapper: 'wrapper_26002_x86_64-pc-linux-gnu'
           extension: ''
           boinc_platform: 'x86_64-pc-linux-gnu'
+          executable: ${{ env.EXECUTABLE }}
         - platform: 'win'
           wrapper: 'wrapper_26016_windows_x86_64'
           boinc_platform: 'windows_x86_64'
           extension: '.exe'
+          executable: ${{ env.EXECUTABLE }}
         - platform: 'mac'
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
           extension: ''
+          executable: ${{ env.EXECUTABLE }}
 
 #  deploy:
 #    needs: [bundle]
