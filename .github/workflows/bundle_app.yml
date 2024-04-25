@@ -19,6 +19,10 @@ on:
         description: 'Name of the wrapper to use - these get updated every so often and can be found here https://boinc.berkeley.edu/dl/?C=M;O=D'
         type: string
         required: true
+      extension:
+        description: 'Lazy way to make sure that Windows executables are referenced with the .exe bit'
+        type: string
+        required: true
 
 jobs:
   bundle:
@@ -27,6 +31,7 @@ jobs:
       PLATFORM: ${{ inputs.platform }}
       BOINC_PLATFORM: ${{ inputs.boinc_platform }}
       WRAPPER: ${{ inputs.wrapper }}
+      EXTENSION: ${{ inputs.extension }}
     runs-on: ubuntu-latest
     steps:
     - name: "Checkout repository"
@@ -39,12 +44,15 @@ jobs:
     - name: "Unzip wrapper"
       run: | 
         unzip $WRAPPER.zip
+        if [[ -d "$WRAPPER" ]]; then
+          mv $WRAPPER/* .
+        fi
     - name: "Create job.xml"
       run: |
-        sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
+        sed -e "s/{{EXECUTABLE}}/$EXECUTABLE$EXTENSION/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
     - name: "Create version.xml"
       run: |
-        sed -e "s/{{WRAPPER}}/$WRAPPER/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
+        sed -e "s/{{WRAPPER}}/$WRAPPER$EXTENSION/g" -e "s/{{VERSION}}/$NEW_VERSION/g" -e "s/{{PLATFORM}}/$PLATFORM/g" boinc/version_template.xml > version.xml
     - name: "Create directory for previously created binaries"
       run: |
         mkdir app.$NEW_VERSION-$PLATFORM
@@ -63,10 +71,10 @@ jobs:
         echo "$SIGNING_KEY" > key
         ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
         ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
-        ./boinc/sign_executable $WRAPPER key > $WRAPPER.sig
+        ./boinc/sign_executable $WRAPPER$EXTENSION key > $WRAPPER$EXTENSION.sig
     - name: "Create app bundle"
       run: |
-        zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml job.$NEW_VERSION-$PLATFORM.xml.sig $WRAPPER $WRAPPER.sig app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM.zip.sig
+        zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml job.$NEW_VERSION-$PLATFORM.xml.sig $WRAPPER$EXTENSION $WRAPPER$EXTENSION.sig app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM.zip.sig
     - name: "Upload binary to GitHub"
       uses: actions/upload-artifact@v4
       with:

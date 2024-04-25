@@ -7,12 +7,16 @@ concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
 
+env:
+  EXECUTABLE: 'BlindDeltaAlgo'
+  APP_DESCRIPTION: 'blind delta algorithm'
+
 jobs:
   define-version:
     uses: ./.github/workflows/identify_target_version.yml
     with:
       # we use the description to fetch the latest version of the app from the BOINC server apps page
-      boinc_app_description: 'blind delta algorithm'
+      boinc_app_description: ${{ env.APP_DESCRIPTION }}
 
   build-binaries:
     runs-on: ${{ matrix.runner }}
@@ -41,10 +45,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11.7"
-      - name: "Install dependencies and cx-Freeze"
+      - name: "Install dependencies and cxFreeze"
         run: |
             pip install -e .
             pip install --upgrade cx_Freeze
+      - name: "Create cxFreeze config file"
+        run: |
+          sed -e "s/EXECUTABLE/$EXECUTABLE/g" -e "s/APP_DESCRIPTION/$APP_DESCRIPTION/g" boinc/generated_boinc_setup_template.py > generated_boinc_setup.py
       - name: "Build binary"
         run: | # See https://cx-freeze.readthedocs.io/en/stable/script.html#script
            python generated_boinc_setup.py build
@@ -73,13 +80,16 @@ jobs:
         include:
         - platform: 'linux'
           wrapper: 'wrapper_26002_x86_64-pc-linux-gnu'
+          extension: ''
           boinc_platform: 'x86_64-pc-linux-gnu'
         - platform: 'win'
           wrapper: 'wrapper_26016_windows_x86_64'
           boinc_platform: 'windows_x86_64'
+          extension: '.exe'
         - platform: 'mac'
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
+          extension: ''
 
 #  deploy:
 #    needs: [bundle]
