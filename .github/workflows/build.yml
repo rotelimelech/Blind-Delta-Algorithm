@@ -8,13 +8,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  version:
+  define-version:
     uses: ./.github/workflows/identify_target_version.yml
     with:
       # we use the description to fetch the latest version of the app from the BOINC server apps page
       boinc_app_description: 'blind delta algorithm'
 
-  build:
+  build-binaries:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -56,10 +56,10 @@ jobs:
             overwrite: true
 
   bundle:
-    needs: [fetch_version, build]
+    needs: [define-version, build-binaries]
     uses: ./.github/workflows/bundle_app.yml
     with:
-      new_version: ${{ needs.fetch_version.new_version }}
+      new_version: ${{ needs.define-version.new_version }}
       platform: ${{ matrix.platform }}
       wrapper: ${{ matrix.wrapper }}
       boinc_platform: ${{ matrix.boinc_platform }}
