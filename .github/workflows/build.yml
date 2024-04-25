@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
       - name: "Create cxFreeze config file"
         run: |
-          sed -e "s/EXECUTABLE/$EXECUTABLE/g" -e "s/APP_DESCRIPTION/$APP_DESCRIPTION/g" boinc/freeze_config_template.py > freeze_config.py
+          sed -e "s/{EXECUTABLE}/$EXECUTABLE/g" -e "s/{APP_DESCRIPTION}/$APP_DESCRIPTION/g" boinc/freeze_config_template.py > freeze_config.py
       - name: "Upload cxFreeze config artifact"
         uses: actions/upload-artifact@v4
         with:
@@ -93,6 +93,7 @@ jobs:
       platform: ${{ matrix.platform }}
       wrapper: ${{ matrix.wrapper }}
       boinc_platform: ${{ matrix.boinc_platform }}
+      executable: 'BlindDeltaAlgo'
     strategy:
       matrix:
         platform:
@@ -103,16 +104,13 @@ jobs:
         - platform: 'linux'
           wrapper: 'wrapper_26002_x86_64-pc-linux-gnu'
           boinc_platform: 'x86_64-pc-linux-gnu'
-          executable: 'BlindDeltaAlgo'
         - platform: 'win'
           wrapper: 'wrapper_26016_windows_x86_64'
           boinc_platform: 'windows_x86_64'
           extension: '.exe'
-          executable: 'BlindDeltaAlgo'
         - platform: 'mac'
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
-          executable: 'BlindDeltaAlgo'
 
 #  deploy:
 #    needs: [bundle]

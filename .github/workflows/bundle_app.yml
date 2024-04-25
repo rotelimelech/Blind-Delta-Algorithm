@@ -32,6 +32,7 @@ jobs:
       BOINC_PLATFORM: ${{ inputs.boinc_platform }}
       WRAPPER: ${{ inputs.wrapper }}
       EXTENSION: ${{ inputs.extension }}
+      EXECUTABLE: ${{ inputs.executable }}
     runs-on: ubuntu-latest
     steps:
     - name: "Checkout repository"
@@ -44,8 +45,10 @@ jobs:
     - name: "Unzip wrapper"
       run: | 
         unzip $WRAPPER.zip
+        ls -al
         if [[ -d "$WRAPPER" ]]; then
           mv $WRAPPER/* .
+          ls -al
         fi
     - name: "Create job.xml"
       run: |
