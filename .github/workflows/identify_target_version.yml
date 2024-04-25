@@ -52,3 +52,4 @@ jobs:
           name: version
           path: version
           overwrite: true
+          if-no-files-found: error
