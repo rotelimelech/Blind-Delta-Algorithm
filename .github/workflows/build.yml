@@ -3,7 +3,9 @@ name: 'Build Python into Cross Platform Executable'
 on:
   push
 
-# hoping that at some point they fix this issue - these should only be defined here and used everywhere but currently not implemented
+# hoping that at some point they fix this... these should only be defined here and used everywhere but currently not implemented
+# so I copied the values around. These are not worth putting in as secrets or vars, IMO.
+# https://github.com/actions/runner/issues/2372
 env:
   EXECUTABLE: 'BlindDeltaAlgo'
   APP_DESCRIPTION: 'blind delta algorithm'
@@ -81,7 +83,6 @@ jobs:
         include:
         - platform: 'linux'
           wrapper: 'wrapper_26002_x86_64-pc-linux-gnu'
-          extension: ''
           boinc_platform: 'x86_64-pc-linux-gnu'
           executable: 'BlindDeltaAlgo'
         - platform: 'win'
@@ -92,7 +93,6 @@ jobs:
         - platform: 'mac'
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
-          extension: ''
           executable: 'BlindDeltaAlgo'
 
 #  deploy:

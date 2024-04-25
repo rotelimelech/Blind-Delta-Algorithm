@@ -22,7 +22,7 @@ on:
       extension:
         description: 'Lazy way to make sure that Windows executables are referenced with the .exe bit'
         type: string
-        required: true
+        required: false
 
 jobs:
   bundle:
