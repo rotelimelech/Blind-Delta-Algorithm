@@ -24,6 +24,9 @@ jobs:
   generate-freeze-config:
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout repository"
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v4
       - name: "Create cxFreeze config file"
         run: |
           sed -e "s/EXECUTABLE/$EXECUTABLE/g" -e "s/APP_DESCRIPTION/$APP_DESCRIPTION/g" boinc/freeze_config_template.py > freeze_config.py
