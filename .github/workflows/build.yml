@@ -3,6 +3,7 @@ name: 'Build Python into Cross Platform Executable'
 on:
   push
 
+# hoping that at some point they fix this issue - these should only be defined here and used everywhere but currently not implemented
 env:
   EXECUTABLE: 'BlindDeltaAlgo'
   APP_DESCRIPTION: 'blind delta algorithm'
@@ -16,7 +17,7 @@ jobs:
     uses: ./.github/workflows/identify_target_version.yml
     with:
       # we use the description to fetch the latest version of the app from the BOINC server apps page
-      boinc_app_description: ${{ env.APP_DESCRIPTION }}
+      boinc_app_description: 'blind delta algorithm'
 
   build-binaries:
     runs-on: ${{ matrix.runner }}
@@ -82,17 +83,17 @@ jobs:
           wrapper: 'wrapper_26002_x86_64-pc-linux-gnu'
           extension: ''
           boinc_platform: 'x86_64-pc-linux-gnu'
-          executable: ${{ env.EXECUTABLE }}
+          executable: 'BlindDeltaAlgo'
         - platform: 'win'
           wrapper: 'wrapper_26016_windows_x86_64'
           boinc_platform: 'windows_x86_64'
           extension: '.exe'
-          executable: ${{ env.EXECUTABLE }}
+          executable: 'BlindDeltaAlgo'
         - platform: 'mac'
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
           extension: ''
-          executable: ${{ env.EXECUTABLE }}
+          executable: 'BlindDeltaAlgo'
 
 #  deploy:
 #    needs: [bundle]
