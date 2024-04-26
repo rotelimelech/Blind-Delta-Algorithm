@@ -1,4 +1,4 @@
-name: 'Build Python into Cross Platform Executable'
+name: 'Build Python into Cross Platform Executable and Deploy on BOINC Server'
 
 on:
   push
