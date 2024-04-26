@@ -131,6 +131,7 @@ jobs:
         END
     - name: 'Make target directory'
       run: |
+        ssh boinc 'ls /home/boincadm/projects/boinc/apps/'
         ssh boinc 'mkdir -p /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
         ssh boinc 'chown boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
         ssh boinc 'chgrp boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
