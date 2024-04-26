@@ -88,7 +88,7 @@ jobs:
             path: build/executable
             overwrite: true
 
-  bundle:
+  bundle_and_deploy:
     needs: [define-version, build-binaries]
     uses: ./.github/workflows/bundle_app.yml
     secrets: inherit
