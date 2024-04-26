@@ -134,8 +134,8 @@ jobs:
     - name: 'Copy binaries to server'
       run: |
         scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/${{env.APP_DIR}}/${{env.NEW_VERSION}}
-        ssh boinc 'sudo su - boincadm "chown boincadm /home/boincadm/projects/boinc/apps/${{env.APP_DIR}}/${{env.NEW_VERSION}}"'
-        ssh boinc 'sudo su - boincadm "chgrp boincadm /home/boincadm/projects/boinc/apps/${{env.APP_DIR}}/${{env.NEW_VERSION}}"'
+        ssh boinc 'sudo su - boincadm -c "chown boincadm /home/boincadm/projects/boinc/apps/${{env.APP_DIR}}/${{env.NEW_VERSION}}"'
+        ssh boinc 'sudo su - boincadm -c "chgrp boincadm /home/boincadm/projects/boinc/apps/${{env.APP_DIR}}/${{env.NEW_VERSION}}"'
     - name: 'Unpack binaries'
       run: |
         ssh boinc 'sudo su - boincadm unzip $BOINC_PLATFORM.zip'
