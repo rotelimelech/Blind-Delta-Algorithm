@@ -52,11 +52,11 @@ jobs:
         if [[ -d "$WRAPPER" ]]; then
           mv $WRAPPER/* .
         fi
-    - name: "Create job.xml"
+    - name: "Create job.xml (Windows)"
       if: ${{ inputs.platform == 'win' }}
       run: |
         sed -e "s/{{EXECUTABLE}}/$EXECUTABLE.exe/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
-    - name: "Create job.xml"
+    - name: "Create job.xml (non-Windows)"
       if: ${{ inputs.platform != 'win' }}
       run: |
         sed -e "s/{{EXECUTABLE}}/$EXECUTABLE/g" boinc/job_template.xml > job.$NEW_VERSION-$PLATFORM.xml
@@ -74,7 +74,7 @@ jobs:
     - name: "Zip build output"
       run: |
         zip -r app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM
-    - name: "Sign files"
+    - name: "Sign files (Windows)"
       if: ${{ inputs.platform == 'win' }}
       env:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
@@ -84,7 +84,7 @@ jobs:
         ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
         ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
         ./boinc/sign_executable $WRAPPER.exe key > $WRAPPER.exe.sig
-    - name: "Sign files"
+    - name: "Sign files (non-Windows)"
       if: ${{ inputs.platform != 'win' }}
       env:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
@@ -94,11 +94,11 @@ jobs:
         ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
         ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
         ./boinc/sign_executable $WRAPPER key > $WRAPPER.sig
-    - name: "Create app bundle"
+    - name: "Create app bundle (Windows)"
       if: ${{ inputs.platform == 'win' }}
       run: |
         zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml job.$NEW_VERSION-$PLATFORM.xml.sig $WRAPPER.win $WRAPPER.win.sig app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM.zip.sig
-    - name: "Create app bundle"
+    - name: "Create app bundle (non-Windows)"
       if: ${{ inputs.platform != 'win' }}
       run: |
         zip -r --junk-paths $BOINC_PLATFORM.zip . -i version.xml job.$NEW_VERSION-$PLATFORM.xml job.$NEW_VERSION-$PLATFORM.xml.sig $WRAPPER $WRAPPER.sig app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM.zip.sig
@@ -131,10 +131,12 @@ jobs:
         END
     - name: 'Make target directory'
       run: |
-        ssh boinc 'su - boincadm -c "mkdir -p /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION"'
+        ssh boinc 'mkdir -p /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
+        ssh boinc 'chown boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
+        ssh boinc 'chgrp boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
     - name: 'Copy binaries to server'
       run: |
-        scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION
+        scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION/$BOINC_PLATFORM.zip
 #    - name: 'Stop running container'
 #      run: |
 #        ssh boinc 'su boincadm ; cd /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION ; unzip $BOINC_PLATFORM.zip ; ./bin/update_versions'
