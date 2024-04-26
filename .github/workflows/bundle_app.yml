@@ -27,9 +27,14 @@ on:
         description: 'Lazy way to make sure that Windows executables are referenced with the .exe bit'
         type: string
         required: false
+      app_dir:
+        description: 'Short name of the app as defined in the BOINC server, also the name of the directory where the binaries are deposited'
+        type: string
+        required: true
 
 jobs:
   bundle:
+    runs-on: ubuntu-latest
     env:
       NEW_VERSION: ${{ inputs.new_version }}
       PLATFORM: ${{ inputs.platform }}
@@ -37,7 +42,7 @@ jobs:
       WRAPPER: ${{ inputs.wrapper }}
       EXTENSION: ${{ inputs.extension }}
       EXECUTABLE: ${{ inputs.executable }}
-    runs-on: ubuntu-latest
+      APP_DIR: ${{ inputs.app_dir }}
     steps:
     - name: "Checkout repository"
       # https://github.com/actions/checkout
@@ -88,3 +93,33 @@ jobs:
           name: ${{ env.BOINC_PLATFORM }}.zip
           path: ${{ env.BOINC_PLATFORM }}.zip
           overwrite: true
+
+    - name: 'Prepare BOINC server access'
+      run: |
+          mkdir -pv ~/.ssh/
+    - name: 'Write key'
+      env:
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+      run: |
+        echo "$SSH_KEY" > ~/.ssh/actions.key
+        chmod 600 ~/.ssh/actions.key
+    - name: 'Write ssh config'
+      run: |
+        cat >>~/.ssh/config <<END
+        Host boinc
+            HostName 172.105.4.251
+            User root
+            IdentityFile ~/.ssh/actions.key
+            StrictHostKeyChecking=no
+            ServerAliveCountMax=10
+            ServerAliveInterval=60
+        END
+    - name: 'Make target directory'
+      run: |
+        ssh boinc 'su boincadm ; mkdir -p /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION
+#    - name: 'Copy binaries to server'
+#      run: |
+#        scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION
+#    - name: 'Stop running container'
+#      run: |
+#        ssh boinc 'su boincadm ; cd /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION ; unzip $BOINC_PLATFORM.zip ; ./bin/update_versions'

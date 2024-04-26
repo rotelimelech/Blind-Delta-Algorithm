@@ -3,11 +3,15 @@ name: 'Build Python into Cross Platform Executable'
 on:
   push
 
-# hoping that at some point they fix this... these should only be defined here and used everywhere but currently not implemented
-# so I copied the values around. These are not worth putting in as secrets or vars, IMO.
-# https://github.com/actions/runner/issues/2372
+# hoping that at some point they fix the fact that I am declaring these env vars but cannot use them in "with"
+# these should only be defined here and used everywhere but currently not implemented
+# so I copied the values around. The workarounds are not palatable: https://github.com/actions/runner/issues/2372
+# That said, when duplicating this workflow, also look to replace occurrences of the values of these env vars
 env:
   EXECUTABLE: 'BlindDeltaAlgo'
+  # in BOINC the short name of the app that is also used as the folder for the app's versions in the /apps/ directory
+  APP_DIR: 'blind_delta_1'
+  # in BOINC the description of the app
   APP_DESCRIPTION: 'blind delta algorithm'
 
 concurrency:
@@ -94,6 +98,7 @@ jobs:
       wrapper: ${{ matrix.wrapper }}
       boinc_platform: ${{ matrix.boinc_platform }}
       executable: 'BlindDeltaAlgo'
+      app_dir: 'blind_delta_1'
     strategy:
       matrix:
         platform:
@@ -112,12 +117,16 @@ jobs:
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
 
-#  deploy:
-#    needs: [bundle]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: "Copy files to server"
-#        run: |
-#          scp
-#      - name: "Invoke deploy script"
-#        run: |
+  cleanup:
+    needs: [bundle]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: |
+            version
+            freeze_config.py
+            linux
+            mac
+            win
+          failOnError: false
