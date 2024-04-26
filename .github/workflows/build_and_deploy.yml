@@ -117,7 +117,7 @@ jobs:
           boinc_platform: 'arm64-apple-darwin'
 
   cleanup:
-    needs: [bundle]
+    needs: [bundle_and_deploy]
     runs-on: ubuntu-latest
     steps:
       - uses: geekyeggo/delete-artifact@v5
