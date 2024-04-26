@@ -74,25 +74,24 @@ jobs:
     - name: "Zip build output"
       run: |
         zip -r app.$NEW_VERSION-$PLATFORM.zip app.$NEW_VERSION-$PLATFORM
-    - name: "Sign files (Windows)"
+    - name: "Sign files"
+      env:
+        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      run: |
+        echo "$SIGNING_KEY" > key
+        ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
+        ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
+    - name: "Sign executables (Windows)"
       if: ${{ inputs.platform == 'win' }}
       env:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
-        echo "$SIGNING_KEY" > key
-        echo "$WRAPPER.exe"
-        ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
-        ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
         ./boinc/sign_executable $WRAPPER.exe key > $WRAPPER.exe.sig
-    - name: "Sign files (non-Windows)"
+    - name: "Sign executables (non-Windows)"
       if: ${{ inputs.platform != 'win' }}
       env:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
-        echo "$SIGNING_KEY" > key
-        echo "$WRAPPER"
-        ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
-        ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
         ./boinc/sign_executable $WRAPPER key > $WRAPPER.sig
     - name: "Create app bundle (Windows)"
       if: ${{ inputs.platform == 'win' }}
@@ -132,9 +131,7 @@ jobs:
     - name: 'Make target directory'
       run: |
         ssh boinc 'ls /home/boincadm/projects/boinc/apps/'
-        ssh boinc 'mkdir /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
-        ssh boinc 'chown boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
-        ssh boinc 'chgrp boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
+        ssh boinc 'sudo su - boincadm -c "mkdir /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION"'
     - name: 'Copy binaries to server'
       run: |
         scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION/
