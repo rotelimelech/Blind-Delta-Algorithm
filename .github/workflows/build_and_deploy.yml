@@ -1,12 +1,12 @@
 name: 'Build Python into Cross Platform Executable and Deploy on BOINC Server'
 
 on:
-  push
+  workflow_dispatch:
 
-# hoping that at some point they fix the fact that I am declaring these env vars but cannot use them in "with"
-# these should only be defined here and used everywhere but currently not implemented
+# Hoping that at some point they fix the fact that I am declaring these env vars but cannot use them in "with" clause
+# These should only be defined here and used everywhere but currently not implemented
 # so I copied the values around. The workarounds are not palatable: https://github.com/actions/runner/issues/2372
-# That said, when duplicating this workflow, also look to replace occurrences of the values of these env vars
+# When duplicating this workflow, also look to replace occurrences of the values of these env vars!
 env:
   EXECUTABLE: 'BlindDeltaAlgo'
   # in BOINC the short name of the app that is also used as the folder for the app's versions in the /apps/ directory
@@ -107,6 +107,7 @@ jobs:
           - win
         include:
         - platform: 'linux'
+          # These wrappers come from BOINC and should be watched for newer versions: https://boinc.berkeley.edu/dl/?C=M;O=D
           wrapper: 'wrapper_26002_x86_64-pc-linux-gnu'
           boinc_platform: 'x86_64-pc-linux-gnu'
         - platform: 'win'
