@@ -26,7 +26,7 @@ on:
       extension:
         description: 'Lazy way to make sure that Windows executables are referenced with the .exe bit'
         type: string
-        required: false
+        required: true
       app_dir:
         description: 'Short name of the app as defined in the BOINC server, also the name of the directory where the binaries are deposited'
         type: string
