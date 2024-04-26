@@ -54,7 +54,6 @@ jobs:
     - name: "Unzip wrapper"
       run: | 
         unzip $WRAPPER.zip
-        ls -al
         if [[ -d "$WRAPPER" ]]; then
           mv $WRAPPER/* .
           ls -al
@@ -81,6 +80,8 @@ jobs:
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
         echo "$SIGNING_KEY" > key
+        ls
+        ls $WRAPPER$EXTENSION
         ./boinc/sign_executable job.$NEW_VERSION-$PLATFORM.xml key > job.$NEW_VERSION-$PLATFORM.xml.sig
         ./boinc/sign_executable app.$NEW_VERSION-$PLATFORM.zip key > app.$NEW_VERSION-$PLATFORM.zip.sig
         ./boinc/sign_executable $WRAPPER$EXTENSION key > $WRAPPER$EXTENSION.sig
