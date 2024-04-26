@@ -132,12 +132,12 @@ jobs:
     - name: 'Make target directory'
       run: |
         ssh boinc 'ls /home/boincadm/projects/boinc/apps/'
-        ssh boinc 'mkdir -p /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
+        ssh boinc 'mkdir /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
         ssh boinc 'chown boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
         ssh boinc 'chgrp boincadm /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION'
     - name: 'Copy binaries to server'
       run: |
-        scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION/$BOINC_PLATFORM.zip
+        scp $BOINC_PLATFORM.zip boinc:/home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION/
 #    - name: 'Stop running container'
 #      run: |
 #        ssh boinc 'su boincadm ; cd /home/boincadm/projects/boinc/apps/$APP_DIR/$NEW_VERSION ; unzip $BOINC_PLATFORM.zip ; ./bin/update_versions'
