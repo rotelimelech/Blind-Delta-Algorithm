@@ -3,10 +3,6 @@ name: 'Build Python into Cross Platform Executable and Deploy on BOINC Server'
 on:
   workflow_dispatch:
 
-# Hoping that at some point they fix the fact that I am declaring these env vars but cannot use them in "with" clause
-# These should only be defined here and used everywhere but currently not implemented
-# so I copied the values around. The workarounds are not palatable: https://github.com/actions/runner/issues/2372
-# When duplicating this workflow, also look to replace occurrences of the values of these env vars!
 env:
   EXECUTABLE: 'BlindDeltaAlgo'
   # in BOINC the short name of the app that is also used as the folder for the app's versions in the /apps/ directory
@@ -19,11 +15,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # See https://github.com/actions/runner/issues/2372 for why this workaround is needed
+  env-var-for-with-workaround:
+    name: "Move env vars to variables"
+    runs-on: ubuntu-latest
+    outputs:
+      EXECUTABLE: ${{ env.EXECUTABLE }}
+      APP_DIR: ${{ env.APP_DIR }}
+      APP_DESCRIPTION: ${{ env.APP_DESCRIPTION }}
+
   define-version:
+    needs: [env-var-for-with-workaround]
     uses: ./.github/workflows/identify_target_version.yml
     with:
       # we use the description to fetch the latest version of the app from the BOINC server apps page
-      boinc_app_description: 'blind delta algorithm'
+      boinc_app_description: ${{ needs.env-var-for-with-workaround.outputs.APP_DESCRIPTION }}
 
   generate-freeze-config:
     runs-on: ubuntu-latest
@@ -89,7 +95,7 @@ jobs:
             overwrite: true
 
   bundle_and_deploy:
-    needs: [define-version, build-binaries]
+    needs: [env-var-for-with-workaround, define-version, build-binaries]
     uses: ./.github/workflows/bundle_app.yml
     secrets: inherit
     with:
@@ -97,8 +103,8 @@ jobs:
       platform: ${{ matrix.platform }}
       wrapper: ${{ matrix.wrapper }}
       boinc_platform: ${{ matrix.boinc_platform }}
-      executable: 'BlindDeltaAlgo'
-      app_dir: 'blind_delta_1'
+      executable: ${{ needs.env-var-for-with-workaround.outputs.EXECUTABLE }}
+      app_dir: ${{ needs.env-var-for-with-workaround.outputs.APP_DIR }}
     strategy:
       matrix:
         platform:
