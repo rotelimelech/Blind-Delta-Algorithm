@@ -1,4 +1,4 @@
-name: 'Build and Deploy on BOINC Server'
+name: 'Build and Deploy to BOINC Server'
 
 on:
   workflow_dispatch:
@@ -23,6 +23,10 @@ jobs:
       EXECUTABLE: ${{ env.EXECUTABLE }}
       APP_DIR: ${{ env.APP_DIR }}
       APP_DESCRIPTION: ${{ env.APP_DESCRIPTION }}
+    steps:
+      - name: "Checkout repository"
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v4
 
   define-version:
     needs: [env-var-for-with-workaround]
