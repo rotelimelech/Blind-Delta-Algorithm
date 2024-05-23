@@ -1,4 +1,4 @@
-name: 'Build Python into Cross Platform Executable and Deploy on BOINC Server'
+name: 'Build and Deploy on BOINC Server'
 
 on:
   workflow_dispatch:
