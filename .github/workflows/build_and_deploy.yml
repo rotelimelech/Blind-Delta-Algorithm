@@ -3,37 +3,17 @@ name: 'Build and Deploy to BOINC Server'
 on:
   workflow_dispatch:
 
-env:
-  EXECUTABLE: 'BlindDeltaAlgo'
-  # in BOINC the short name of the app that is also used as the folder for the app's versions in the /apps/ directory
-  APP_DIR: 'blind_delta_1'
-  # in BOINC the description of the app
-  APP_DESCRIPTION: 'blind delta algorithm'
-
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
-  # See https://github.com/actions/runner/issues/2372 for why this workaround is needed
-  env-var-for-with-workaround:
-    name: "Move env vars to variables"
-    runs-on: ubuntu-latest
-    outputs:
-      EXECUTABLE: ${{ env.EXECUTABLE }}
-      APP_DIR: ${{ env.APP_DIR }}
-      APP_DESCRIPTION: ${{ env.APP_DESCRIPTION }}
-    steps:
-      - name: "Checkout repository"
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v4
 
   define-version:
-    needs: [env-var-for-with-workaround]
     uses: ./.github/workflows/identify_target_version.yml
     with:
       # we use the description to fetch the latest version of the app from the BOINC server apps page
-      boinc_app_description: ${{ needs.env-var-for-with-workaround.outputs.APP_DESCRIPTION }}
+      boinc_app_description: ${{ vars.APP_DESCRIPTION }}
 
   generate-freeze-config:
     runs-on: ubuntu-latest
@@ -98,8 +78,8 @@ jobs:
             path: build/executable
             overwrite: true
 
-  bundle_and_deploy:
-    needs: [env-var-for-with-workaround, define-version, build-binaries]
+  bundle-and-deploy:
+    needs: [define-version, build-binaries]
     uses: ./.github/workflows/bundle_app.yml
     secrets: inherit
     with:
@@ -107,8 +87,8 @@ jobs:
       platform: ${{ matrix.platform }}
       wrapper: ${{ matrix.wrapper }}
       boinc_platform: ${{ matrix.boinc_platform }}
-      executable: ${{ needs.env-var-for-with-workaround.outputs.EXECUTABLE }}
-      app_dir: ${{ needs.env-var-for-with-workaround.outputs.APP_DIR }}
+      executable: ${{ vars.EXECUTABLE }}
+      app_dir: ${{ vars.APP_DIR }}
     strategy:
       matrix:
         platform:
@@ -127,16 +107,16 @@ jobs:
           wrapper: 'wrapper_26017_universal-apple-darwin'
           boinc_platform: 'arm64-apple-darwin'
 
-  cleanup:
-    needs: [bundle_and_deploy]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: geekyeggo/delete-artifact@v5
-        with:
-          name: |
-            version
-            freeze_config.py
-            linux
-            mac
-            win
-          failOnError: false
+#  cleanup:
+#    needs: [bundle-and-deploy]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: geekyeggo/delete-artifact@v5
+#        with:
+#          name: |
+#            version
+#            freeze_config.py
+#            linux
+#            mac
+#            win
+#          failOnError: false
