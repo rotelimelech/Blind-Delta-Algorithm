@@ -22,6 +22,9 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v4
       - name: "Create cxFreeze config file"
+        env:
+          EXECUTABLE: ${{ vars.EXECUTABLE }}
+          APP_DESCRIPTION: ${{ vars.APP_DESCRIPTION }}
         run: |
           sed -e "s/{EXECUTABLE}/$EXECUTABLE/g" -e "s/{APP_DESCRIPTION}/$APP_DESCRIPTION/g" boinc/freeze_config_template.py > freeze_config.py
       - name: "Upload cxFreeze config artifact"
